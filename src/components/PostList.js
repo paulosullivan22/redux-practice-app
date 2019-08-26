@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchPosts } from '../actions'
+import { fetchPosts, fetchUser } from '../actions'
 
 class PostList extends React.Component {
 
@@ -8,13 +8,34 @@ class PostList extends React.Component {
         this.props.fetchPosts();
     }
 
+    handleClick = id => {
+        this.props.fetchUser(id)
+    }
+
+    renderList = () => {
+        return this.props.posts.map(post => {
+            return (
+                <div key={post.id}>
+                    <p>{post.title}</p>
+                    <p>{post.body}</p>
+                    <hr />
+                    <button onClick={() => this.handleClick(post.id)}>Log user info</button>
+                </div>
+            )
+        })
+    }
+
     render() {
-        return (
-            <div>
-                Post list
-            </div>
-        )
+        console.log(this.props.user)
+        return <div>{this.renderList()}</div>
     }
 }
 
-export default connect(null, { fetchPosts })(PostList)
+const mapStateToProps = state => {
+    return {
+        posts: state.posts,
+        user: state.user
+    }
+}
+
+export default connect(mapStateToProps, { fetchPosts, fetchUser })(PostList)
